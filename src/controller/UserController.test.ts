@@ -1,26 +1,21 @@
 import { Request } from 'express';
-import { IUser, UserService } from '../service/UserService';
 import { makeMockResponse } from '../__mocks__/mockResponse.mock';
 import { UserController } from './UserController';
 
-describe('UserController', () => {
-  const mockUserService: Partial<UserService> = {
-    createUser: jest.fn(),
-    getUsers: jest.fn(),
-    db: [
-      {
-        name: 'John Doe',
-        email: 'kenaa@example.com',
-      },
-      {
-        name: 'Jane Doe',
-        email: 'kenaa@example.com',
-      },
-    ],
-  };
+const mockUserService = {
+  createUser: jest.fn(),
+};
 
-  const db = new UserService(mockUserService.db);
-  const userController = new UserController(db);
+jest.mock('../service/UserService', () => {
+  return {
+    UserService: jest.fn().mockImplementation(() => {
+      return mockUserService;
+    }),
+  };
+});
+
+describe('UserController', () => {
+  const userController = new UserController();
 
   it('Deve retornar o BadRequest do name', () => {
     const mockRequest = {
@@ -35,7 +30,7 @@ describe('UserController', () => {
 
     expect(mockResponse.state.status).toBe(400);
     expect(mockResponse.state.json).toMatchObject({
-      message: 'Nome obrigatorio',
+      message: 'Todos os campos são obrigatorio',
     });
   });
 
@@ -52,7 +47,25 @@ describe('UserController', () => {
 
     expect(mockResponse.state.status).toBe(400);
     expect(mockResponse.state.json).toMatchObject({
-      message: 'Email obrigatorio',
+      message: 'Todos os campos são obrigatorio',
+    });
+  });
+
+  it('Deve retornar o BadRequest do password', () => {
+    const mockRequest = {
+      body: {
+        name: 'jonatas',
+        email: 'jonatas@gmail.com',
+      },
+    } as Request;
+
+    const mockResponse = makeMockResponse();
+
+    userController.createUser(mockRequest, mockResponse);
+
+    expect(mockResponse.state.status).toBe(400);
+    expect(mockResponse.state.json).toMatchObject({
+      message: 'Todos os campos são obrigatorio',
     });
   });
 
@@ -61,6 +74,7 @@ describe('UserController', () => {
       body: {
         name: 'Jonatas',
         email: 'jonatas@gmail.com',
+        password: 'password',
       },
     } as Request;
     const mockResponse = makeMockResponse();
@@ -69,18 +83,6 @@ describe('UserController', () => {
     expect(mockResponse.state.status).toBe(201);
 
     expect(mockResponse.state.json).toMatchObject({ message: 'User created' });
-  });
-
-  it('Deve retornar todos os usuarios', () => {
-    const mockRequest = {} as Request;
-    const mockResponse = makeMockResponse();
-
-    userController.getAllUser(mockRequest, mockResponse);
-
-    expect(mockResponse.state.status).toBe(200);
-    expect(mockResponse.state.json).toMatchObject(
-      mockUserService.db as Array<IUser>
-    );
   });
 
   it('Deve deletar o usuario', () => {

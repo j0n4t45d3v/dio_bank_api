@@ -8,35 +8,30 @@ export class UserController {
     this.userService = userService;
   }
 
-  public getAllUser(req: Request, res: Response): Response {
-    const users: UserService = this.userService;
-    return res.status(200).json(users.getUsers());
+  public getUser(req: Request, res: Response): Response {
+    return res.status(200);
   }
 
   public createUser(req: Request, res: Response): Response {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: 'Nome obrigatorio' });
-    }
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email obrigatorio' });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Todos os campos são obrigatorio' });
     }
 
     const user: UserService = this.userService;
-    user.createUser(name, email);
+    user.createUser(name, email, password);
     return res.status(201).json({ message: 'User created' });
   }
 
   public deleteUser(req: Request, res: Response): Response {
-    const { id } = req.params;
+    /* const { id } = req.params;
 
-    for (const i of this.userService.getUsers()) {
-      if (i.name === id) {
+     for (const i of this.userService.getUser()) {
+     if (i.name === id) {
         this.userService.deleteUser(id);
       }
-    }
+    } */
     return res.status(200).json({ message: 'Usuario deletado' });
   }
 }

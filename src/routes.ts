@@ -9,5 +9,5 @@ const user = new UserController(new UserService());
 routes.get('/', () => {});
 
 // rota de usuario
-routes.get('/users', user.getAllUser);
+routes.get('/users', user.getUser);
 routes.post('/users', user.createUser);

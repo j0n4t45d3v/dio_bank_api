@@ -13,8 +13,8 @@
       "ES7"
     ],
     // "jsx": "preserve",                                
-    // "experimentalDecorators": true,                   
-    // "emitDecoratorMetadata": true,                    
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     // "jsxFactory": "",                                 
     // "jsxFragmentFactory": "",                         
     // "jsxImportSource": "",                            
@@ -24,7 +24,7 @@
     // "moduleDetection": "auto",                        
     /* Modules */
     "module": "commonjs",
-    "rootDir": "./src",
+    "rootDir": ".",
     "moduleResolution": "node",
     // "baseUrl": "./",                                  
     // "paths": {},                                      
@@ -94,10 +94,13 @@
     // "skipLibCheck": true                                
   },
   "include": [
-    "src"
+    "src",
+    "./src/database/db.sqlite"
   ],
   "exclude": [
     "test",
-    "node_modules"
+    "node_modules",
+    "./src/__mocks__",
+    "./src/**/*.test.ts"
   ]
 }
